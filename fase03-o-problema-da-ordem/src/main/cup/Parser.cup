@@ -3,6 +3,7 @@ package br.maua.cic303;
 import java_cup.runtime.*;
 
 parser code {:
+    // Método chamado pelo CUP quando encontra um erro sintático
     public void syntax_error(Symbol cur_token) {
         throw new RuntimeException("Erro Sintático na linha " + cur_token.left + ", coluna " + cur_token.right);
     }
@@ -30,7 +31,10 @@ non terminal expr;
 /* PRECEDÊNCIA E ASSOCIATIVIDADE                                             */
 /* ========================================================================= */
 
-/* Precedência matemática para resolver a ambiguidade de expressões */
+/* TODO 1: Declare a precedência para resolver a ambiguidade matemática. */
+/* E resolvemos o problema do "Dangling Else" associando o ELSE à estrutura mais próxima */
+precedence nonassoc THEN;
+precedence nonassoc ELSE;
 precedence left REL_OP;
 precedence left ADD_OP;
 precedence left MUL_OP;
@@ -41,15 +45,16 @@ precedence left MUL_OP;
 
 start with program;
 
-/* Um programa é uma lista de comandos */
+/* TODO 2: Como definir um programa que é uma lista de comandos? */
 program ::= stmt_list ;
 
-/* Lista recursiva à esquerda no BNF */
+/* TODO 3: Como definir uma lista recursiva no BNF? */
+/* Uma lista de comandos é "uma lista seguida de um comando" OU "apenas um comando" */
 stmt_list ::= stmt_list stmt 
             | stmt 
             ;
 
-/* Declaração dos comandos */
+/* TODO 4: Declaração dos comandos (assign, if, while, block, null) */
 stmt ::= assign_stmt 
        | if_stmt 
        | while_stmt 
@@ -57,28 +62,23 @@ stmt ::= assign_stmt
        | null_stmt 
        ;
 
-/* Regra 3: ID = expressao ; */
 assign_stmt ::= ID ASSIGN expr SEMI ;
 
-/* Regra 4: if ( expressao ) then bloco [else bloco] */
-/* Mudado de 'stmt' para 'block_stmt' para seguir a especificação JACA */
-if_stmt ::= IF LPAREN expr RPAREN THEN block_stmt 
-          | IF LPAREN expr RPAREN THEN block_stmt ELSE block_stmt 
+/* TODO 5: Implemente o IF, WHILE, BLOCO e NULL */
+/* Usando o formato híbrido com parênteses e THEN, adaptável à sua linguagem */
+if_stmt ::= IF LPAREN expr RPAREN THEN stmt 
+          | IF LPAREN expr RPAREN THEN stmt ELSE stmt 
           ;
 
-/* Regra 5: while ( expressao ) bloco */
-/* Mudado de 'stmt' para 'block_stmt' para seguir a especificação JACA */
-while_stmt ::= WHILE LPAREN expr RPAREN block_stmt ;
+while_stmt ::= WHILE LPAREN expr RPAREN stmt ;
 
-/* Regra 6: Bloco: { lista_de_comandos } */
 block_stmt ::= LBRACE stmt_list RBRACE 
              | LBRACE RBRACE /* Permite a existência de blocos vazios: {} */
              ;
 
-/* Comando nulo ; */
 null_stmt ::= SEMI ;
 
-/* Regra 7: Regras de expressões (aritmética, relacional, etc) */
+/* TODO 6: Regras de expressões (aritmética, relacional, etc) */
 expr ::= expr ADD_OP expr
        | expr MUL_OP expr
        | expr REL_OP expr

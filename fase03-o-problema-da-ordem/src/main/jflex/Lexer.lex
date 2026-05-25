@@ -7,7 +7,7 @@ import java_cup.runtime.Symbol;
 %class Lexer
 %public
 %unicode
-%cup       
+%cup     
 %line
 %column
 
