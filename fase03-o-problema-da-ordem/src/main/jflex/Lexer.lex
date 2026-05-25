@@ -1,13 +1,13 @@
 package br.maua.cic303;
 
-import java_cup.runtime.Symbol;
+import java_cup.runtime.Symbol; 
 
 %%
 
 %class Lexer
 %public
 %unicode
-%cup     
+%cup       
 %line
 %column
 
